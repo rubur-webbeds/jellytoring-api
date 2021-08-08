@@ -1,6 +1,6 @@
 use jellytoring;
 CREATE TABLE IF NOT EXISTS `interests`(
-    `id` int(10) NOT NULL AUTO_INCREMENT,
+    `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(20) NOT NULL,
     PRIMARY KEY (`id`)
 );
@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `interests`(
 INSERT INTO `interests` (`name`) VALUES('Scientific'), ('Divulgation'), ('Educational'), ('Other');
 
 CREATE TABLE IF NOT EXISTS `countries` (
-	`id` int(11) NOT NULL,
+	`id` int(11) UNSIGNED NOT NULL,
 	`phone_code` int(5) NOT NULL,
 	`country_code` char(2) NOT NULL,
 	`country_code_alpha_3` char(3) DEFAULT NULL,
@@ -274,7 +274,7 @@ INSERT INTO `countries` (`id`, `phone_code`, `country_code`, `country_code_alpha
     (252,263,'ZW','ZWE','Zimbabwe','AF');
 
 CREATE TABLE IF NOT EXISTS `continents` (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`continent_code` varchar(2) DEFAULT NULL,
 	`continent_name` varchar(30) DEFAULT NULL,
 	PRIMARY KEY (`id`)
@@ -290,11 +290,11 @@ INSERT INTO `continents` (`id`, `continent_code`, `continent_name`) VALUES
     (7, 'SA', 'South America');
 
 CREATE TABLE IF NOT EXISTS `users`(
-    `id` int(10) NOT NULL AUTO_INCREMENT,
+    `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `full_name` varchar(70) NOT NULL,
     `email` varchar(255) NOT NULL,
     `password` varchar(255) NOT NULL,
-    `interest_id` int(10) NOT NULL,
+    `interest_id` int(10) UNSIGNED NOT NULL,
     `institution` varchar(70) NOT NULL,
     `country_code` char(2) NOT NULL,
     `grant_contact_info_permission` boolean NOT NULL,
@@ -307,7 +307,7 @@ CREATE TABLE IF NOT EXISTS `users`(
 );
 
 CREATE TABLE `roles`(
-    `id` int(10) NOT NULL AUTO_INCREMENT,
+    `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` varchar(30) NOT NULL,
     `code` varchar(3) NOT NULL,
     PRIMARY KEY (`id`)
@@ -315,16 +315,17 @@ CREATE TABLE `roles`(
 
 INSERT INTO `roles`(`name`, `code`) VALUES ('Administrator', 'ADM'), ('User', 'USR');
 
+
 CREATE TABLE IF NOT EXISTS `user_roles`(
-    `user_id` int(10) NOT NULL,
-    `role_id` int(10) NOT NULL,
+    `user_id` int(10) UNSIGNED NOT NULL,
+    `role_id` int(10) UNSIGNED NOT NULL,
     FOREIGN KEY(`user_id`) REFERENCES `users`(`id`),
     FOREIGN KEY(`role_id`) REFERENCES `roles`(`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `email_confirmations`(
-    `id` int(10) NOT NULL AUTO_INCREMENT,
-    `user_id` int(10) NOT NULL,
+    `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `user_id` int(10) UNSIGNED NOT NULL,
     `confirmation_code` varchar(36) NOT NULL,
     `issued_at` datetime NOT NULL,
     PRIMARY KEY (`id`),
