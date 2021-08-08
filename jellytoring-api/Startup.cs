@@ -1,4 +1,6 @@
 using jellytoring_api.Infrastructure;
+using jellytoring_api.Infrastructure.Users;
+using jellytoring_api.Service.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,6 +37,9 @@ namespace jellytoring_api
             });
 
             services.AddSingleton<IConnectionFactory>(new MySqlConnectionFactory(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
