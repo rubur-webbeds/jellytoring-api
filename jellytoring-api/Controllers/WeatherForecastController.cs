@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dapper;
+using jellytoring_api.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -17,10 +19,12 @@ namespace jellytoring_api.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IConnectionFactory _connectionFactory;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IConnectionFactory connectionFactory)
         {
             _logger = logger;
+            _connectionFactory = connectionFactory;
         }
 
         [HttpGet]
@@ -34,6 +38,27 @@ namespace jellytoring_api.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet("/roles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            IEnumerable<string> roles;
+            using var connection = _connectionFactory.CreateConnection();
+            await connection.OpenAsync();
+            //var command = connection.CreateCommand();
+            //command.CommandText = "select name from roles";
+
+            //var result = await command.ExecuteReaderAsync();
+
+            //while (result.Read())
+            //{
+            //    roles.Add(result.GetString(0));
+            //}
+
+            roles = await connection.QueryAsync<string>("select name from roles");
+
+            return Ok(roles);
         }
     }
 }
