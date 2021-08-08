@@ -21,6 +21,10 @@ namespace jellytoring_api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureAppConfiguration(conf =>
+                {
+                    conf.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
                 });
     }
 }
