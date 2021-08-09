@@ -1,19 +1,15 @@
 using jellytoring_api.Infrastructure;
+using jellytoring_api.Infrastructure.Email;
 using jellytoring_api.Infrastructure.Users;
+using jellytoring_api.Models.Settings;
+using jellytoring_api.Service.Email;
 using jellytoring_api.Service.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace jellytoring_api
 {
@@ -37,9 +33,14 @@ namespace jellytoring_api
             });
 
             services.AddSingleton<IConnectionFactory>(new MySqlConnectionFactory(Configuration.GetConnectionString("DefaultConnection")));
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
+            services.AddScoped<IEmailConfirmationRepository, EmailConfirmationRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
