@@ -32,5 +32,7 @@ namespace jellytoring_api.Service.Email
                 await _emailService.SendEmailAsync(email);
             }
         }
+
+        public Task<bool> ConfirmEmailAsync(string confirmationCode) => _emailConfirmationRepository.ConfirmEmailAsync(confirmationCode);
     }
 }

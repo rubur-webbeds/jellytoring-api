@@ -20,5 +20,21 @@ namespace jellytoring_api.Infrastructure.Email
 
             return await connection.ExecuteScalarAsync<uint>(EmailConfirmationQueries.Create, emailConfirmation);
         }
+
+        public async Task<bool> ConfirmEmailAsync(string confirmationCode)
+        {
+            using var connection = _connectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
+            var command = connection.CreateCommand();
+            var confirmationCodeParam = command.CreateParameter();
+            confirmationCodeParam.ParameterName = "@confirmationCode";
+            confirmationCodeParam.Value = confirmationCode;
+            command.CommandText = EmailConfirmationQueries.ConfirmEmail;
+            command.Parameters.Add(confirmationCodeParam);
+            var rows = await command.ExecuteNonQueryAsync();
+
+            return rows == 2;
+        }
     }
 }
