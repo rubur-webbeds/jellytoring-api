@@ -20,6 +20,12 @@ namespace jellytoring_api.Controllers
             _usersService = usersService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        {
+            return Ok(await _usersService.GetAllAsync());
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(uint id)
         {

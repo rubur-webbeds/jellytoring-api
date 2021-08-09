@@ -4,7 +4,6 @@
         uint Id,
         string FullName,
         string Email,
-        string Password,
         uint InterestId,
         string Institution,
         string CountryCode,

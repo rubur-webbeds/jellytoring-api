@@ -16,9 +16,12 @@ namespace jellytoring_api.Infrastructure.Users
             _connectionFactory = connectionFactory;
         }
 
-        public Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<User>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            using var connection = _connectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
+            return await connection.QueryAsync<User>(UsersQueries.GetAll);
         }
 
         public async Task<User> GetAsync(uint id)
