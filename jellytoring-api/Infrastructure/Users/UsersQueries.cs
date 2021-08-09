@@ -12,7 +12,7 @@
                                               grant_contact_info_permission, grant_uib_permission, email_confirmed, active
                                        from users;";
 
-        public const string Get = @"select id Id, full_name FullName, email Email, password Password, interest_id InterestId,
+        public const string Get = @"select id Id, full_name FullName, email Email, interest_id InterestId,
                                            institution Institution, country_code CountryCode, grant_contact_info_permission GrantContactInfoPermission,
                                            grant_uib_permission GrantUibPermission, email_confirmed EmailConfirmed, active Active
                                     from users
