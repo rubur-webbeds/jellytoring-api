@@ -1,5 +1,7 @@
 ﻿using jellytoring_api.Infrastructure.Users;
+using jellytoring_api.Models.Email;
 using jellytoring_api.Models.Users;
+using jellytoring_api.Service.Email;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +13,12 @@ namespace jellytoring_api.Service.Users
     public class UsersService : IUsersService
     {
         private readonly IUsersRepository _usersRepository;
+        private readonly IEmailConfirmationService _emailConfirmationService;
 
-        public UsersService(IUsersRepository usersRepository)
+        public UsersService(IUsersRepository usersRepository, IEmailConfirmationService emailConfirmationService)
         {
             _usersRepository = usersRepository;
+            _emailConfirmationService = emailConfirmationService;
         }
 
         public Task<IEnumerable<User>> GetAllAsync() => _usersRepository.GetAllAsync();
@@ -27,9 +31,14 @@ namespace jellytoring_api.Service.Users
             user.Password = hashedPassword;
             var userId = await _usersRepository.CreateAsync(user);
 
-            // TODO: send email verification
+            if(userId != 0)
+            {
+                // TODO: replace hardcoded email
+                await _emailConfirmationService.SendEmailConfirmationAsync("rubur100@gmail.com", userId);
+                return await GetAsync(userId);
+            }
 
-            return userId == 0 ? null : await GetAsync(userId);
+            return null;
         }
     }
 }
