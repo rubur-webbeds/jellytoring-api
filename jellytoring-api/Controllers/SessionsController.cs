@@ -22,8 +22,8 @@ namespace jellytoring_api.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<User>> PostSession([FromBody] CreateSessionUser createSessionUser)
         {
-            var session = await _sessionsService.CreateAsync(createSessionUser);
-            return session is not null ? CreatedAtAction(nameof(PostSession), session) : StatusCode(500, "Oops! Something went wrong");
+            var jwt = await _sessionsService.CreateAsync(createSessionUser);
+            return jwt is not null ? CreatedAtAction(nameof(PostSession), jwt) : StatusCode(500, "Oops! Something went wrong");
         }
 
         // FOR TESTING ONLY
