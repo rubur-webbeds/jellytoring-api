@@ -13,10 +13,21 @@
                                               grant_uib_permission GrantUibPermission, email_confirmed EmailConfirmed, active Active
                                        from users;";
 
-        public const string Get = @"select id Id, full_name FullName, email Email, password Password, interest_id InterestId,
+        public const string Get = @"select id Id, full_name FullName, email Email, interest_id InterestId,
                                            institution Institution, country_code CountryCode, grant_contact_info_permission GrantContactInfoPermission,
                                            grant_uib_permission GrantUibPermission, email_confirmed EmailConfirmed, active Active
                                     from users
                                     where id = @Id;";
+
+        public const string GetByEmail = @"select email Email, password Password
+                                        from users
+                                        where email = @email;";
+
+        public const string GetUserRoles = @"select u.email as Email, u.full_name as FullName, r.id as Roles_Id, r.name as Roles_Name, r.Code as Roles_Code
+                                        from users u
+                                        inner join user_roles ur on u.id = ur.user_id
+                                        inner join roles r on ur.role_id = r.id
+                                        where email = @email;";
+
     }
 }

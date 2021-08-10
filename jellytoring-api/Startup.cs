@@ -5,12 +5,15 @@ using jellytoring_api.Service.Interests;
 using jellytoring_api.Models.Settings;
 using jellytoring_api.Service.Email;
 using jellytoring_api.Service.Users;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 using jellytoring_api.Infrastructure.Countries;
 using jellytoring_api.Infrastructure.Interests;
 using jellytoring_api.Infrastructure.Email;
@@ -29,7 +32,20 @@ namespace jellytoring_api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    };
+                });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -42,6 +58,8 @@ namespace jellytoring_api
 
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+
+            services.AddScoped<ISessionsService, SessionsService>();
 
             services.AddScoped<ICountriesService, CountriesService>();
             services.AddScoped<ICountriesRepository, CountriesRepository>();
@@ -73,6 +91,7 @@ namespace jellytoring_api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
