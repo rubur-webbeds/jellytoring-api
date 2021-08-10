@@ -27,6 +27,8 @@ namespace jellytoring_api.Service.Users
             user.Password = hashedPassword;
             var userId = await _usersRepository.CreateAsync(user);
 
+            // TODO: send email verification
+
             return userId == 0 ? null : await GetAsync(userId);
         }
     }

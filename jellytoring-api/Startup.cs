@@ -1,5 +1,9 @@
 using jellytoring_api.Infrastructure;
+using jellytoring_api.Infrastructure.Countries;
+using jellytoring_api.Infrastructure.Interests;
 using jellytoring_api.Infrastructure.Users;
+using jellytoring_api.Service.Countries;
+using jellytoring_api.Service.Interests;
 using jellytoring_api.Service.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -51,6 +55,7 @@ namespace jellytoring_api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "jellytoring_api", Version = "v1" });
             });
+            services.AddCors();
 
             services.AddSingleton<IConnectionFactory>(new MySqlConnectionFactory(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -58,6 +63,12 @@ namespace jellytoring_api
             services.AddScoped<IUsersRepository, UsersRepository>();
 
             services.AddScoped<ISessionsService, SessionsService>();
+
+            services.AddScoped<ICountriesService, CountriesService>();
+            services.AddScoped<ICountriesRepository, CountriesRepository>();
+
+            services.AddScoped<IInterestsService, InterestsService>();
+            services.AddScoped<IInterestsRepository, InterestsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,6 +80,11 @@ namespace jellytoring_api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "jellytoring_api v1"));
             }
+
+            app.UseCors(options =>
+            {
+                options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+            });
 
             app.UseHttpsRedirection();
 
