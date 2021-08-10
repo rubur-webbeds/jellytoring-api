@@ -39,6 +39,7 @@ namespace jellytoring_api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "jellytoring_api", Version = "v1" });
             });
+            services.AddCors();
 
             services.AddSingleton<IConnectionFactory>(new MySqlConnectionFactory(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -61,6 +62,11 @@ namespace jellytoring_api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "jellytoring_api v1"));
             }
+
+            app.UseCors(options =>
+            {
+                options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+            });
 
             app.UseHttpsRedirection();
 
