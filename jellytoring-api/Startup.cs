@@ -1,6 +1,7 @@
 using jellytoring_api.Infrastructure;
-using jellytoring_api.Infrastructure.Email;
 using jellytoring_api.Infrastructure.Users;
+using jellytoring_api.Service.Countries;
+using jellytoring_api.Service.Interests;
 using jellytoring_api.Models.Settings;
 using jellytoring_api.Service.Email;
 using jellytoring_api.Service.Users;
@@ -10,6 +11,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using jellytoring_api.Infrastructure.Countries;
+using jellytoring_api.Infrastructure.Interests;
+using jellytoring_api.Infrastructure.Email;
 
 namespace jellytoring_api
 {
@@ -31,12 +35,19 @@ namespace jellytoring_api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "jellytoring_api", Version = "v1" });
             });
+            services.AddCors();
 
             services.AddSingleton<IConnectionFactory>(new MySqlConnectionFactory(Configuration.GetConnectionString("DefaultConnection")));
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+
+            services.AddScoped<ICountriesService, CountriesService>();
+            services.AddScoped<ICountriesRepository, CountriesRepository>();
+
+            services.AddScoped<IInterestsService, InterestsService>();
+            services.AddScoped<IInterestsRepository, InterestsRepository>();
 
             services.AddTransient<IEmailService, EmailService>();
             services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
@@ -52,6 +63,11 @@ namespace jellytoring_api
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "jellytoring_api v1"));
             }
+
+            app.UseCors(options =>
+            {
+                options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+            });
 
             app.UseHttpsRedirection();
 
