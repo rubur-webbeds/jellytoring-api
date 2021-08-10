@@ -1,7 +1,9 @@
 using jellytoring_api.Infrastructure;
 using jellytoring_api.Infrastructure.Countries;
+using jellytoring_api.Infrastructure.Interests;
 using jellytoring_api.Infrastructure.Users;
 using jellytoring_api.Service.Countries;
+using jellytoring_api.Service.Interests;
 using jellytoring_api.Service.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -45,6 +47,9 @@ namespace jellytoring_api
 
             services.AddScoped<ICountriesService, CountriesService>();
             services.AddScoped<ICountriesRepository, CountriesRepository>();
+
+            services.AddScoped<IInterestsService, InterestsService>();
+            services.AddScoped<IInterestsRepository, InterestsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
