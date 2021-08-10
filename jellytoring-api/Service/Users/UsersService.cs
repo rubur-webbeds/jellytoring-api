@@ -33,6 +33,7 @@ namespace jellytoring_api.Service.Users
 
             if(userId != 0)
             {
+                // TODO: replace hardcoded email
                 await _emailConfirmationService.SendEmailConfirmationAsync("rubur100@gmail.com", userId);
                 return await GetAsync(userId);
             }
