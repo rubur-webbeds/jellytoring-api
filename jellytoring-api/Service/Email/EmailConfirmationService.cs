@@ -11,6 +11,7 @@ namespace jellytoring_api.Service.Email
     {
         private readonly IEmailService _emailService;
         private readonly IEmailConfirmationRepository _emailConfirmationRepository;
+        private readonly double MaxHoursToConfirmEmail = 24;
 
         public EmailConfirmationService(IEmailService emailService, IEmailConfirmationRepository emailConfirmationRepository)
         {
@@ -33,6 +34,22 @@ namespace jellytoring_api.Service.Email
             }
         }
 
-        public Task<bool> ConfirmEmailAsync(string confirmationCode) => _emailConfirmationRepository.ConfirmEmailAsync(confirmationCode);
+        public async Task<bool> ConfirmEmailAsync(string confirmationCode)
+        {
+            if (await ConfirmationCodeIsValid(confirmationCode))
+            {
+                return await _emailConfirmationRepository.ConfirmEmailAsync(confirmationCode);
+            }
+
+            return false;
+        }
+
+        private async Task<bool> ConfirmationCodeIsValid(string confirmationCode)
+        {
+            var emailConfirmation = await _emailConfirmationRepository.GetConfirmationAsync(confirmationCode);
+
+            // 24h to confirm the email
+            return emailConfirmation.IssuedAt.AddHours(MaxHoursToConfirmEmail) >= DateTime.Now;
+        }
     }
 }
