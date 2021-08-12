@@ -7,5 +7,6 @@ namespace jellytoring_api.Infrastructure.Email
     {
         Task<uint> CreateConfirmationAsync(EmailConfirmation emailConfirmation);
         Task<bool> ConfirmEmailAsync(string confirmationCode);
+        Task<EmailConfirmation> GetConfirmationAsync(string confirmationCode);
     }
 }
