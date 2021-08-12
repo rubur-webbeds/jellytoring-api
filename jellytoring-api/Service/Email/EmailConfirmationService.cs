@@ -47,6 +47,10 @@ namespace jellytoring_api.Service.Email
         private async Task<bool> ConfirmationCodeIsValid(string confirmationCode)
         {
             var emailConfirmation = await _emailConfirmationRepository.GetConfirmationAsync(confirmationCode);
+            if(emailConfirmation is null)
+            {
+                return false;
+            }
 
             // 24h to confirm the email
             return emailConfirmation.IssuedAt.AddHours(MaxHoursToConfirmEmail) >= DateTime.Now;
