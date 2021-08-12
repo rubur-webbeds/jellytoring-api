@@ -19,7 +19,7 @@
                                     from users
                                     where id = @Id;";
 
-        public const string GetByEmail = @"select email Email, password Password
+        public const string GetByEmail = @"select email Email, password Password, email_confirmed EmailConfirmed
                                         from users
                                         where email = @email;";
 

@@ -27,7 +27,7 @@ namespace jellytoring_api.Service.Users
         {
             var user = await _usersRepository.GetAsync(createSessionUser.Email);
 
-            if (user == null || !BC.Verify(createSessionUser.Password, user.Password))
+            if (user == null || !BC.Verify(createSessionUser.Password, user.Password) || !user.EmailConfirmed)
             {
                 return null;
             } else {

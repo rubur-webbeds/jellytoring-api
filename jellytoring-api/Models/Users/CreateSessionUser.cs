@@ -2,5 +2,6 @@
 {
     public record CreateSessionUser(
         string Email,
-        string Password);
+        string Password,
+        bool EmailConfirmed);
 }
