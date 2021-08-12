@@ -14,5 +14,9 @@ namespace jellytoring_api.Infrastructure.Email
         public const string ConfirmEmail = @"update users set email_confirmed = 1 where id = (
                                                 select user_id from email_confirmations where confirmation_code = @confirmationCode);
                                              delete from email_confirmations where confirmation_code = @confirmationCode;";
+
+        public const string Get = @"select user_id UserId, issued_at IssuedAt
+                                    from email_confirmations
+                                    where confirmation_code = @confirmationCode";
     }
 }

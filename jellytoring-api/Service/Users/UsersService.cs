@@ -27,6 +27,13 @@ namespace jellytoring_api.Service.Users
 
         public async Task<User> CreateAsync(CreateUser user)
         {
+            // check if user email already exists
+            var existingUser = await _usersRepository.GetAsync(user.Email);
+            if(existingUser is not null)
+            {
+                return null;
+            }
+
             var hashedPassword = BC.HashPassword(user.Password);
             user.Password = hashedPassword;
             var userId = await _usersRepository.CreateAsync(user);
