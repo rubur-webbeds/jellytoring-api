@@ -29,5 +29,9 @@
                                         inner join roles r on ur.role_id = r.id
                                         where email = @email;";
 
+        public const string GetUserRoleId = "select id from roles where code = 'USR';";
+        public const string GetAdminRoleId = "select id from roles where code = 'ADM';";
+        public const string AddRoleToUser = "insert into user_roles(user_id, role_id) values (@userId, @userRoleId);";
+
     }
 }

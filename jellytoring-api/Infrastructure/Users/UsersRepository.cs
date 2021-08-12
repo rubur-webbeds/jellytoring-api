@@ -55,7 +55,11 @@ namespace jellytoring_api.Infrastructure.Users
             using var connection = _connectionFactory.CreateConnection();
             await connection.OpenAsync();
 
-            return await connection.ExecuteScalarAsync<uint>(UsersQueries.Create, user);
+            var userId = await connection.ExecuteScalarAsync<uint>(UsersQueries.Create, user);
+            // TODO: place this in the RoleService
+            var userRoleId = await connection.QueryAsync<uint>(UsersQueries.GetUserRoleId);
+            await connection.ExecuteScalarAsync(UsersQueries.AddRoleToUser, new { userId, userRoleId });
+            return userId;
         }
     }
 }
