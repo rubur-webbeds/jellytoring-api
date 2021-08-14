@@ -11,6 +11,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          find: '"config-loaded-on-deploy": {}'
+          replace: ${{ secrets.APPSETTINGS_CONFIGURATION }}
+          include: 'appsettings.json'
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -36,10 +42,12 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         privateKey: ${{ secrets.REMOTE_SSH_KEY }}
-    #- name: Run SSH command
-     # uses: garygrossgarten/github-action-ssh@v0.3.0
-      #with:
-       # command: sudo service xxx start
-        #host: ${{ secrets.REMOTE_HOST }}
-        #username: ${{ secrets.REMOTE_USER }}
-        #privateKey: ${{ secrets.REMOTE_SSH_KEY }}
+    - name: Run SSH command
+      uses: garygrossgarten/github-action-ssh@v0.3.0
+      with:
+        command: |
+          sudo cp jellytoring-api.service /etc/systemd/system/jellytoring-api.service
+          sudo systemctl daemon-reload && sudo systemctl start jellytoring-api
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        privateKey: ${{ secrets.REMOTE_SSH_KEY }}
