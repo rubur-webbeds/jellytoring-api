@@ -12,11 +12,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Find and Replace
-        uses: jacobtomlinson/gha-find-replace@master
-        with:
-          find: '"config-loaded-on-deploy": {}'
-          replace: ${{ secrets.APPSETTINGS_CONFIGURATION }}
-          include: 'appsettings.json'
+      uses: jacobtomlinson/gha-find-replace@master
+      with:
+        find: '"config-loaded-on-deploy": {}'
+        replace: ${{ secrets.APPSETTINGS_CONFIGURATION }}
+        include: 'appsettings.json'
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
