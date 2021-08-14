@@ -16,7 +16,7 @@ jobs:
       with:
         dotnet-version: '5.0.x'
     - name: Dotnet Publish
-      run: dotnet publish -c Release -r linux-x64
+      run: dotnet publish -c Release -r linux-x64 -o deploy_folder
     - name: Install OpenVPN
       run: |
         sudo apt update
@@ -31,7 +31,7 @@ jobs:
     - name: Copy via ssh
       uses: garygrossgarten/github-action-scp@v0.5.3
       with:
-        local: /home/runner/work/jellytoring-api/jellytoring-api
+        local: /home/runner/work/jellytoring-api/jellytoring-api/deploy_folder
         remote: ${{ secrets.REMOTE_TARGET }}
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
