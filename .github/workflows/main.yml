@@ -47,7 +47,9 @@ jobs:
     - name: Run SSH command
       uses: garygrossgarten/github-action-ssh@v0.3.0
       with:
-        command: systemctl restart jellytoring-api
+        command: |
+          chmod +x /opt/jellytoring-api/jellytoring-api
+          systemctl restart jellytoring-api
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         privateKey: ${{ secrets.REMOTE_SSH_KEY }}
