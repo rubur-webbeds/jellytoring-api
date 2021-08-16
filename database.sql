@@ -332,3 +332,14 @@ CREATE TABLE IF NOT EXISTS `email_confirmations`(
     FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
 );
 
+CREATE TABLE IF NOT EXISTS `images`(
+	`id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `user_id` int(10) UNSIGNED NOT NULL,
+    `location` varchar(255) NOT NULL,
+    `date` datetime NOT NULL,
+    `filename` varchar(41) NOT NULL,
+    `confirmed` boolean NOT NULL DEFAULT 0,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
+);
+
