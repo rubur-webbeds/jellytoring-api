@@ -5,7 +5,7 @@ namespace jellytoring_api.Service.Images
 {
     public interface IImagesService
     {
-        Task<Image> CreateAsync(uint userId, Image image);
+        Task<Image> CreateAsync(string userEmail, Image image);
         Task<Image> GetAsync(uint imageId);
     }
 }

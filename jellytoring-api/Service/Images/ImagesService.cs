@@ -1,4 +1,5 @@
 ﻿using jellytoring_api.Infrastructure.Images;
+using jellytoring_api.Infrastructure.Users;
 using jellytoring_api.Models.Images;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -11,11 +12,16 @@ namespace jellytoring_api.Service.Images
     {
         private readonly IImagesDbRepository _imagesDbRepository;
         private readonly IImagesDiskRepository _imagesDiskRepository;
+        private readonly IUsersRepository _usersRepository;
 
-        public ImagesService(IImagesDbRepository imagesDbRepository, IImagesDiskRepository imagesDiskRepository)
+        public ImagesService(
+            IImagesDbRepository imagesDbRepository,
+            IImagesDiskRepository imagesDiskRepository,
+            IUsersRepository usersRepository)
         {
             _imagesDbRepository = imagesDbRepository;
             _imagesDiskRepository = imagesDiskRepository;
+            _usersRepository = usersRepository;
         }
 
         public async Task<Image> GetAsync(uint imageId)
@@ -24,13 +30,15 @@ namespace jellytoring_api.Service.Images
             return dbImage;
         }
 
-        public async Task<Image> CreateAsync(uint userId, Image image)
+        public async Task<Image> CreateAsync(string userEmail, Image image)
         {
             /*
              * TODO: implement security validations
              * compare extension and contenttype
              * check validation signature
              */
+
+            var user = await _usersRepository.GetAsync(userEmail);
 
             var newFilename = Guid.NewGuid();
             var extension = ContentTypeToExtension(image.File.ContentType);
@@ -41,7 +49,7 @@ namespace jellytoring_api.Service.Images
 
             image.Filename = $"{newFilename}.{extension}";
 
-            var imageId = await _imagesDbRepository.CreateAsync(userId, image);
+            var imageId = await _imagesDbRepository.CreateAsync(user.Id, image);
 
             if(imageId != 0)
             {
