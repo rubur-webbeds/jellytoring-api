@@ -17,6 +17,8 @@ using System.Text;
 using jellytoring_api.Infrastructure.Countries;
 using jellytoring_api.Infrastructure.Interests;
 using jellytoring_api.Infrastructure.Email;
+using jellytoring_api.Service.Images;
+using jellytoring_api.Infrastructure.Images;
 
 namespace jellytoring_api
 {
@@ -70,6 +72,10 @@ namespace jellytoring_api
             services.AddTransient<IEmailService, EmailService>();
             services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
             services.AddScoped<IEmailConfirmationRepository, EmailConfirmationRepository>();
+
+            services.AddScoped<IImagesService, ImagesService>();
+            services.AddScoped<IImagesDbRepository, ImagesDbRepository>();
+            services.AddScoped<IImagesDiskRepository, ImagesDiskRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
