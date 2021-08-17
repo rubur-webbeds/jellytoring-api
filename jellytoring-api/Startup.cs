@@ -19,6 +19,7 @@ using jellytoring_api.Infrastructure.Interests;
 using jellytoring_api.Infrastructure.Email;
 using jellytoring_api.Service.Images;
 using jellytoring_api.Infrastructure.Images;
+using jellytoring_api.Middleware.Jwt;
 
 namespace jellytoring_api
 {
@@ -54,6 +55,7 @@ namespace jellytoring_api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "jellytoring_api", Version = "v1" });
             });
             services.AddCors();
+            services.AddHttpContextAccessor();
 
             services.AddSingleton<IConnectionFactory>(new MySqlConnectionFactory(Configuration.GetConnectionString("DefaultConnection")));
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
@@ -99,6 +101,7 @@ namespace jellytoring_api
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseJwtParser();
 
             app.UseEndpoints(endpoints =>
             {
