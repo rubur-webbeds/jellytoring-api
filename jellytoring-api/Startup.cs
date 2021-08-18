@@ -17,6 +17,9 @@ using System.Text;
 using jellytoring_api.Infrastructure.Countries;
 using jellytoring_api.Infrastructure.Interests;
 using jellytoring_api.Infrastructure.Email;
+using jellytoring_api.Service.Images;
+using jellytoring_api.Infrastructure.Images;
+using jellytoring_api.Middleware.Jwt;
 
 namespace jellytoring_api
 {
@@ -52,6 +55,7 @@ namespace jellytoring_api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "jellytoring_api", Version = "v1" });
             });
             services.AddCors();
+            services.AddHttpContextAccessor();
 
             services.AddSingleton<IConnectionFactory>(new MySqlConnectionFactory(Configuration.GetConnectionString("DefaultConnection")));
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
@@ -70,6 +74,10 @@ namespace jellytoring_api
             services.AddTransient<IEmailService, EmailService>();
             services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
             services.AddScoped<IEmailConfirmationRepository, EmailConfirmationRepository>();
+
+            services.AddScoped<IImagesService, ImagesService>();
+            services.AddScoped<IImagesDbRepository, ImagesDbRepository>();
+            services.AddScoped<IImagesDiskRepository, ImagesDiskRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,6 +101,7 @@ namespace jellytoring_api
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseJwtParser();
 
             app.UseEndpoints(endpoints =>
             {
