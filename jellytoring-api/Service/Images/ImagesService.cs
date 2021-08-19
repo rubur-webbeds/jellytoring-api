@@ -3,7 +3,9 @@ using jellytoring_api.Infrastructure.Users;
 using jellytoring_api.Models.Images;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace jellytoring_api.Service.Images
@@ -32,17 +34,16 @@ namespace jellytoring_api.Service.Images
 
         public async Task<Image> CreateAsync(string userEmail, Image image)
         {
-            /*
-             * TODO: implement security validations
-             * compare extension and contenttype
-             * check validation signature
-             */
+            if (!Validate(image))
+            {
+                return null;
+            }
 
             var user = await _usersRepository.GetAsync(userEmail);
 
             var newFilename = Guid.NewGuid();
             var extension = ContentTypeToExtension(image.File.ContentType);
-            if(extension == "error")
+            if (extension == "error")
             {
                 return null;
             }
@@ -51,7 +52,7 @@ namespace jellytoring_api.Service.Images
 
             var imageId = await _imagesDbRepository.CreateAsync(user.Id, image);
 
-            if(imageId != 0)
+            if (imageId != 0)
             {
                 await _imagesDiskRepository.SaveAsync(image);
             }
@@ -69,6 +70,53 @@ namespace jellytoring_api.Service.Images
                     return "png";
                 default:
                     return "error";
+            }
+        }
+
+        private bool Validate(Image image)
+        {
+            // file extension validation
+            string[] permittedExtensions = { ".jpeg", ".jpg", ".png" };
+            var imgExtension = Path.GetExtension(image.File.FileName).ToLowerInvariant();
+
+            if (string.IsNullOrEmpty(imgExtension) || !permittedExtensions.Contains(imgExtension))
+            {
+                return false;
+            }
+
+            // file singnature validation
+            var _fileSignature = new Dictionary<string, List<byte[]>>
+            {
+                {
+                ".jpeg", new List<byte[]>
+                    {
+                        new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 },
+                        new byte[] { 0xFF, 0xD8, 0xFF, 0xE2 },
+                        new byte[] { 0xFF, 0xD8, 0xFF, 0xE3 },
+                    }
+                },
+                {
+                ".jpg", new List<byte[]>
+                    {
+                        new byte[] { 0xFF, 0xD8, 0xFF, 0xE0 },
+                        new byte[] { 0xFF, 0xD8, 0xFF, 0xE2 },
+                        new byte[] { 0xFF, 0xD8, 0xFF, 0xE3 },
+                    }
+                },
+                { ".png", new List<byte[]>
+                    {
+                    new byte[]{ 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A }
+                    }
+                }
+            };
+
+            using (var reader = new BinaryReader(image.File.OpenReadStream()))
+            {
+                var signatures = _fileSignature[imgExtension];
+                var headerBytes = reader.ReadBytes(signatures.Max(m => m.Length));
+
+                return signatures.Any(signature =>
+                    headerBytes.Take(signature.Length).SequenceEqual(signature));
             }
         }
     }
