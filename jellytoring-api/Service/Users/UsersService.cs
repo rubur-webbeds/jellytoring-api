@@ -1,10 +1,7 @@
 ﻿using jellytoring_api.Infrastructure.Users;
-using jellytoring_api.Models.Email;
 using jellytoring_api.Models.Users;
 using jellytoring_api.Service.Email;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using BC = BCrypt.Net.BCrypt;
 
@@ -40,8 +37,7 @@ namespace jellytoring_api.Service.Users
 
             if(userId != 0)
             {
-                // TODO: replace hardcoded email
-                await _emailConfirmationService.SendEmailConfirmationAsync("rubur100@gmail.com", userId);
+                await _emailConfirmationService.SendEmailConfirmationAsync(user.Email, userId);
                 return await GetAsync(userId);
             }
 
