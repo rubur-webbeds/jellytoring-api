@@ -39,7 +39,7 @@ jobs:
     - name: stop systemd service
       uses: garygrossgarten/github-action-ssh@v0.3.0
       with:
-        command: systemctl stop jellytoring-api
+        command: sudo systemctl stop jellytoring-api
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         privateKey: ${{ secrets.REMOTE_SSH_KEY }}
@@ -54,7 +54,7 @@ jobs:
     - name: start systemd service
       uses: garygrossgarten/github-action-ssh@v0.3.0
       with:
-        command: systemctl start jellytoring-api
+        command: sudo systemctl start jellytoring-api
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         privateKey: ${{ secrets.REMOTE_SSH_KEY }}
