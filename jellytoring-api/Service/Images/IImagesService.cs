@@ -1,4 +1,5 @@
 ﻿using jellytoring_api.Models.Images;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace jellytoring_api.Service.Images
@@ -7,5 +8,6 @@ namespace jellytoring_api.Service.Images
     {
         Task<Image> CreateAsync(string userEmail, Image image);
         Task<Image> GetAsync(uint imageId);
+        Task<IEnumerable<Image>> GetUserImagesAsync(string userEmail);
     }
 }

@@ -3,6 +3,7 @@ using jellytoring_api.Service.Images;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace jellytoring_api.Controllers
@@ -19,6 +20,15 @@ namespace jellytoring_api.Controllers
         {
             _imagesService = imagesService;
             _httpContextAccessor = httpContextAccessor;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Image>>> GetAll()
+        {
+            var userEmail = _httpContextAccessor.HttpContext.Items["UserEmail"].ToString();
+            var images = await _imagesService.GetUserImagesAsync(userEmail);
+
+            return Ok(images);
         }
 
         [HttpPost]
