@@ -60,6 +60,13 @@ namespace jellytoring_api.Service.Images
             return imageId != 0 ? await GetAsync(imageId) : null;
         }
 
+        public async Task<IEnumerable<Image>> GetUserImagesAsync(string userEmail)
+        {
+            var user = await _usersRepository.GetAsync(userEmail);
+
+            return await _imagesDbRepository.GetUserImagesAsync(user.Id);
+        }
+
         private string ContentTypeToExtension(string contentType)
         {
             switch (contentType)

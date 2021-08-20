@@ -8,5 +8,8 @@
 
         public const string Get = @"select id Id, user_id UserId, location Location, date Date, filename Filename, confirmed Confirmed
                                     from images where id = @imageId;";
+
+        public const string GetUserImages = @"select id Id, user_id UserId, location Location, date Date, filename Filename, confirmed Confirmed
+                                                from images where user_id = @userId";
     }
 }

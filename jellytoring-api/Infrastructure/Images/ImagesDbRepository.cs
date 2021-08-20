@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using jellytoring_api.Models.Images;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace jellytoring_api.Infrastructure.Images
@@ -27,6 +28,14 @@ namespace jellytoring_api.Infrastructure.Images
 
             var param = new { userId, image.Location, image.Filename, image.Date, image.Confirmed };
             return await connection.ExecuteScalarAsync<uint>(ImagesQueries.Create, param);
+        }
+
+        public async Task<IEnumerable<Image>> GetUserImagesAsync(uint userId)
+        {
+            using var connection = _connectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
+            return await connection.QueryAsync<Image>(ImagesQueries.GetUserImages, new { userId });
         }
     }
 }
