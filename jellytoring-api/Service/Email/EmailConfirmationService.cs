@@ -27,10 +27,9 @@ namespace jellytoring_api.Service.Email
 
             if (confirmationId != 0)
             {
-                // TODO: generate email body with guid and url
-                var body = $"whats uuuuuup. {guid}";
-                var email = new EmailRequest { To = emailTo, Subject = "Jellytoring email confirmation", Body = body };
-                await _emailService.SendEmailAsync(email);
+                var body = emailConfirmation.ConfirmationCode.ToString();
+                var email = new EmailRequest { To = emailTo, Subject = "Jellytoring email verification", Body = body };
+                await _emailService.SendEmailTemplateAsync(email);
             }
         }
 
