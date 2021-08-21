@@ -4,6 +4,7 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace jellytoring_api.Service.Email
@@ -23,6 +24,27 @@ namespace jellytoring_api.Service.Email
             email.Subject = emailReq.Subject;
             var builder = new BodyBuilder();
             builder.HtmlBody = emailReq.Body;
+            email.Body = builder.ToMessageBody();
+            using var smtp = new SmtpClient();
+            smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+            smtp.Authenticate(_mailSettings.Email, _mailSettings.Password);
+            await smtp.SendAsync(email);
+            smtp.Disconnect(true);
+        }
+
+        public async Task SendEmailTemplateAsync(EmailRequest emailReq)
+        {
+            string FilePath = Directory.GetCurrentDirectory() + "\\Templates\\EmailConfirmationTemplate.html";
+            StreamReader str = new StreamReader(FilePath);
+            string MailText = str.ReadToEnd();
+            str.Close();
+            MailText = MailText.Replace("[confirmationCode]", emailReq.Body);
+            var email = new MimeMessage();
+            email.Sender = MailboxAddress.Parse(_mailSettings.Email);
+            email.To.Add(MailboxAddress.Parse(emailReq.To));
+            email.Subject = emailReq.Subject;
+            var builder = new BodyBuilder();
+            builder.HtmlBody = MailText;
             email.Body = builder.ToMessageBody();
             using var smtp = new SmtpClient();
             smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
