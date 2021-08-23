@@ -2,6 +2,7 @@
 using jellytoring_api.Models.Settings;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System.IO;
@@ -11,10 +12,12 @@ namespace jellytoring_api.Service.Email
 {
     public class EmailService : IEmailService
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly EmailSettings _mailSettings;
-        public EmailService(IOptions<EmailSettings> mailSettings)
+        public EmailService(IOptions<EmailSettings> mailSettings, IWebHostEnvironment webHostEnvironment)
         {
             _mailSettings = mailSettings.Value;
+            _webHostEnvironment = webHostEnvironment;
         }
         public async Task SendEmailAsync(EmailRequest emailReq)
         {
@@ -34,7 +37,7 @@ namespace jellytoring_api.Service.Email
 
         public async Task SendEmailTemplateAsync(EmailRequest emailReq)
         {
-            string FilePath = Directory.GetCurrentDirectory() + "\\Templates\\EmailConfirmationTemplate.html";
+            string FilePath = Path.Combine(_webHostEnvironment.WebRootPath, "Templates/EmailConfirmationTemplate.html");
             StreamReader str = new StreamReader(FilePath);
             string MailText = str.ReadToEnd();
             str.Close();
