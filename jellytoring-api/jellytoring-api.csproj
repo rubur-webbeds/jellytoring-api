@@ -1,29 +1,32 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>jellytoring_api</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<RootNamespace>jellytoring_api</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
-    <PackageReference Include="Dapper" Version="2.0.90" />
-    <PackageReference Include="MailKit" Version="2.14.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0" NoWarn="NU1605" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.0" NoWarn="NU1605" />
-    <PackageReference Include="MimeKit" Version="2.14.0" />
-    <PackageReference Include="MySqlConnector" Version="1.3.11" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
-    <PackageReference Include="Slapper.AutoMapper" Version="2.0.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+		<PackageReference Include="Dapper" Version="2.0.90" />
+		<PackageReference Include="MailKit" Version="2.14.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0" NoWarn="NU1605" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.0" NoWarn="NU1605" />
+		<PackageReference Include="MimeKit" Version="2.14.0" />
+		<PackageReference Include="MySqlConnector" Version="1.3.11" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+		<PackageReference Include="Slapper.AutoMapper" Version="2.0.4" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Service\Sessions\" />
-    <None Remove="Slapper.AutoMapper" />
-    <None Remove="Newtonsoft.Json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Service\Sessions\" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Service\Sessions\" />
+		<None Remove="Slapper.AutoMapper" />
+		<None Remove="Newtonsoft.Json" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Service\Sessions\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="wwwroot\Templates\EmailConfirmationTemplate.html" />
+	</ItemGroup>
 </Project>
