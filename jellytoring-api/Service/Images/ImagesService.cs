@@ -96,6 +96,8 @@ namespace jellytoring_api.Service.Images
             return await _imagesDbRepository.GetUserImagesAsync(user.Id);
         }
 
+        public Task<IEnumerable<Image>> GetAllAsync(ImagesFilter filter) => _imagesDbRepository.GetAllAsync(filter);
+
         private string ContentTypeToExtension(string contentType)
         {
             switch (contentType)

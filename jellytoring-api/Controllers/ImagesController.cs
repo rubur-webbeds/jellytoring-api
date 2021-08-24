@@ -22,13 +22,11 @@ namespace jellytoring_api.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        // TODO: just admins can call this endpoint
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Image>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Image>>> GetAll([FromQuery] ImagesFilter filter)
         {
-            var userEmail = _httpContextAccessor.HttpContext.Items["UserEmail"].ToString();
-            var images = await _imagesService.GetUserImagesAsync(userEmail);
-
-            return Ok(images);
+            return Ok(await _imagesService.GetAllAsync(filter));
         }
 
         [HttpGet("user")]
