@@ -6,6 +6,6 @@ namespace jellytoring_api.Service.Email
     public interface IEmailService
     {
         Task SendEmailAsync(EmailRequest emailReq);
-        Task SendEmailTemplateAsync(EmailRequest emailReq);
+        Task SendEmailTemplateAsync(EmailTemplateRequest emailReq);
     }
 }

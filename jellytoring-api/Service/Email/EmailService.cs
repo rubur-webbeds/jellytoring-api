@@ -35,17 +35,23 @@ namespace jellytoring_api.Service.Email
             smtp.Disconnect(true);
         }
 
-        public async Task SendEmailTemplateAsync(EmailRequest emailReq)
+        public async Task SendEmailTemplateAsync(EmailTemplateRequest emailReq)
         {
-            string FilePath = Path.Combine(_webHostEnvironment.WebRootPath, "Templates/EmailConfirmationTemplate.html");
+            string FilePath = Path.Combine(_webHostEnvironment.WebRootPath, "Templates", emailReq.Template.Name);
             StreamReader str = new StreamReader(FilePath);
             string MailText = str.ReadToEnd();
             str.Close();
-            MailText = MailText.Replace("[confirmationCode]", emailReq.Body);
+
+            // replace all the template options
+            foreach(var key in emailReq.Template.Options.Options.Keys)
+            {
+                MailText = MailText.Replace(key, emailReq.Template.Options.Options[key]);
+            }
+
             var email = new MimeMessage();
             email.Sender = MailboxAddress.Parse(_mailSettings.Email);
-            email.To.Add(MailboxAddress.Parse(emailReq.To));
-            email.Subject = emailReq.Subject;
+            email.To.Add(MailboxAddress.Parse(emailReq.EmailRequest.To));
+            email.Subject = emailReq.EmailRequest.Subject;
             var builder = new BodyBuilder();
             builder.HtmlBody = MailText;
             email.Body = builder.ToMessageBody();
