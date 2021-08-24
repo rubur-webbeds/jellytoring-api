@@ -37,7 +37,7 @@ namespace jellytoring_api.Service.Email
 
                 var templateReq = new EmailTemplateRequest
                 {
-                    EmailRequest = new EmailRequest { To = "rubur100@gmail.com", Subject = "Jellytoring email verification" },
+                    EmailRequest = new EmailRequest { To = emailTo, Subject = "Jellytoring email verification" },
                     Template = emailConfirmationTemplate
                 };
                 
