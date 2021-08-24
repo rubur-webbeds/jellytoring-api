@@ -20,6 +20,7 @@ using jellytoring_api.Infrastructure.Email;
 using jellytoring_api.Service.Images;
 using jellytoring_api.Infrastructure.Images;
 using jellytoring_api.Middleware.Jwt;
+using jellytoring_api.Infrastructure.Statuses;
 
 namespace jellytoring_api
 {
@@ -78,6 +79,8 @@ namespace jellytoring_api
             services.AddScoped<IImagesService, ImagesService>();
             services.AddScoped<IImagesDbRepository, ImagesDbRepository>();
             services.AddScoped<IImagesDiskRepository, ImagesDiskRepository>();
+
+            services.AddScoped<IStatusesRepository, StatusesRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

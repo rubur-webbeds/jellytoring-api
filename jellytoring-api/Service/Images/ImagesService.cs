@@ -1,4 +1,5 @@
 ﻿using jellytoring_api.Infrastructure.Images;
+using jellytoring_api.Infrastructure.Statuses;
 using jellytoring_api.Infrastructure.Users;
 using jellytoring_api.Models.Email;
 using jellytoring_api.Models.Email.Template;
@@ -19,17 +20,20 @@ namespace jellytoring_api.Service.Images
         private readonly IImagesDiskRepository _imagesDiskRepository;
         private readonly IUsersRepository _usersRepository;
         private readonly IEmailService _emailService;
+        private readonly IStatusesRepository _statusesRepository;
 
         public ImagesService(
             IImagesDbRepository imagesDbRepository,
             IImagesDiskRepository imagesDiskRepository,
             IUsersRepository usersRepository,
-            IEmailService emailService)
+            IEmailService emailService,
+            IStatusesRepository statusesRepository)
         {
             _imagesDbRepository = imagesDbRepository;
             _imagesDiskRepository = imagesDiskRepository;
             _usersRepository = usersRepository;
             _emailService = emailService;
+            _statusesRepository = statusesRepository;
         }
 
         public async Task<Image> GetAsync(uint imageId)
@@ -53,6 +57,9 @@ namespace jellytoring_api.Service.Images
             {
                 return null;
             }
+
+            var pendingStatus = await _statusesRepository.GetPendingAsync();
+            image.SetStatus(pendingStatus);
 
             image.Filename = $"{newFilename}.{extension}";
 
