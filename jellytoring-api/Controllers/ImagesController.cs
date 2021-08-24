@@ -31,6 +31,15 @@ namespace jellytoring_api.Controllers
             return Ok(images);
         }
 
+        [HttpGet("user")]
+        public async Task<ActionResult<IEnumerable<Image>>> GetUserImages()
+        {
+            var userEmail = _httpContextAccessor.HttpContext.Items["UserEmail"].ToString();
+            var images = await _imagesService.GetUserImagesAsync(userEmail);
+
+            return Ok(images);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Image>> Post([FromForm] Image image)
         {
