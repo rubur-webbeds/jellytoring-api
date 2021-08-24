@@ -1,7 +1,10 @@
 ﻿using jellytoring_api.Infrastructure.Images;
 using jellytoring_api.Infrastructure.Statuses;
 using jellytoring_api.Infrastructure.Users;
+using jellytoring_api.Models.Email;
+using jellytoring_api.Models.Email.Template;
 using jellytoring_api.Models.Images;
+using jellytoring_api.Service.Email;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -16,17 +19,20 @@ namespace jellytoring_api.Service.Images
         private readonly IImagesDbRepository _imagesDbRepository;
         private readonly IImagesDiskRepository _imagesDiskRepository;
         private readonly IUsersRepository _usersRepository;
+        private readonly IEmailService _emailService;
         private readonly IStatusesRepository _statusesRepository;
 
         public ImagesService(
             IImagesDbRepository imagesDbRepository,
             IImagesDiskRepository imagesDiskRepository,
             IUsersRepository usersRepository,
+            IEmailService emailService,
             IStatusesRepository statusesRepository)
         {
             _imagesDbRepository = imagesDbRepository;
             _imagesDiskRepository = imagesDiskRepository;
             _usersRepository = usersRepository;
+            _emailService = emailService;
             _statusesRepository = statusesRepository;
         }
 
@@ -63,6 +69,22 @@ namespace jellytoring_api.Service.Images
             {
                 await _imagesDiskRepository.SaveAsync(image);
             }
+
+            // TODO: probably move to ImageApprovalService.
+            // In the future we may need to send the approvation through a new channel as well. P.e. send a notification in the UI
+            var imageApprovalTemplate =
+                new TemplateBuilder()
+                .SetName("ImageApprovalTemplate.html")
+                .Build();
+
+            var templateReq = new EmailTemplateRequest
+            {
+                // TODO: set admin email from config
+                EmailRequest = new EmailRequest { To = "rubur100@gmail.com", Subject = "New upload to approve! How cool is that?" },
+                Template = imageApprovalTemplate
+            };
+
+            await _emailService.SendEmailTemplateAsync(templateReq);
 
             return imageId != 0 ? await GetAsync(imageId) : null;
         }
