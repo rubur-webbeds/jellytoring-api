@@ -1,5 +1,6 @@
 ﻿using jellytoring_api.Infrastructure.Email;
 using jellytoring_api.Models.Email;
+using jellytoring_api.Models.Email.Template;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +28,20 @@ namespace jellytoring_api.Service.Email
 
             if (confirmationId != 0)
             {
-                var body = emailConfirmation.ConfirmationCode.ToString();
-                var email = new EmailRequest { To = emailTo, Subject = "Jellytoring email verification", Body = body };
-                await _emailService.SendEmailTemplateAsync(email);
+                var emailConfirmationTemplate =
+                new TemplateBuilder()
+                .SetName("EmailConfirmationTemplate.html")
+                .AddOption("CONFIRMATION_CODE")
+                .WithValue(emailConfirmation.ConfirmationCode.ToString())
+                .Build();
+
+                var templateReq = new EmailTemplateRequest
+                {
+                    EmailRequest = new EmailRequest { To = "rubur100@gmail.com", Subject = "Jellytoring email verification" },
+                    Template = emailConfirmationTemplate
+                };
+                
+                await _emailService.SendEmailTemplateAsync(templateReq);
             }
         }
 
