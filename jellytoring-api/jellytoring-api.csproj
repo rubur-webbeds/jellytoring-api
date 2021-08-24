@@ -27,6 +27,7 @@
 		<Folder Include="Service\Sessions\" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Include="wwwroot\Templates\ImageApprovalTemplate.html" />
 	  <None Include="wwwroot\Templates\EmailConfirmationTemplate.html" />
 	</ItemGroup>
 </Project>
