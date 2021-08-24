@@ -1,4 +1,5 @@
 ﻿using jellytoring_api.Infrastructure.Images;
+using jellytoring_api.Infrastructure.Statuses;
 using jellytoring_api.Infrastructure.Users;
 using jellytoring_api.Models.Images;
 using Microsoft.AspNetCore.Http;
@@ -15,15 +16,18 @@ namespace jellytoring_api.Service.Images
         private readonly IImagesDbRepository _imagesDbRepository;
         private readonly IImagesDiskRepository _imagesDiskRepository;
         private readonly IUsersRepository _usersRepository;
+        private readonly IStatusesRepository _statusesRepository;
 
         public ImagesService(
             IImagesDbRepository imagesDbRepository,
             IImagesDiskRepository imagesDiskRepository,
-            IUsersRepository usersRepository)
+            IUsersRepository usersRepository,
+            IStatusesRepository statusesRepository)
         {
             _imagesDbRepository = imagesDbRepository;
             _imagesDiskRepository = imagesDiskRepository;
             _usersRepository = usersRepository;
+            _statusesRepository = statusesRepository;
         }
 
         public async Task<Image> GetAsync(uint imageId)
@@ -47,6 +51,9 @@ namespace jellytoring_api.Service.Images
             {
                 return null;
             }
+
+            var pendingStatus = await _statusesRepository.GetPendingAsync();
+            image.SetStatus(pendingStatus);
 
             image.Filename = $"{newFilename}.{extension}";
 
