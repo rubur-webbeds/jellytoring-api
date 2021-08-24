@@ -18,7 +18,8 @@ namespace jellytoring_api.Infrastructure.Images
             using var connection = _connectionFactory.CreateConnection();
             await connection.OpenAsync();
 
-            return await connection.QueryFirstOrDefaultAsync<Image>(ImagesQueries.Get, new { imageId });
+            var result = await connection.QueryFirstOrDefaultAsync(ImagesQueries.Get, new { imageId });
+            return Slapper.AutoMapper.MapDynamic<Image>(result);
         }
 
         public async Task<uint> CreateAsync(uint userId, Image image)
@@ -26,7 +27,7 @@ namespace jellytoring_api.Infrastructure.Images
             using var connection = _connectionFactory.CreateConnection();
             await connection.OpenAsync();
 
-            var param = new { userId, image.Location, image.Filename, image.Date, image.Confirmed };
+            var param = new { userId, image.Location, image.Filename, image.Date, StatusId = image.Status.Id };
             return await connection.ExecuteScalarAsync<uint>(ImagesQueries.Create, param);
         }
 
@@ -35,7 +36,8 @@ namespace jellytoring_api.Infrastructure.Images
             using var connection = _connectionFactory.CreateConnection();
             await connection.OpenAsync();
 
-            return await connection.QueryAsync<Image>(ImagesQueries.GetUserImages, new { userId });
+            var result = await connection.QueryAsync(ImagesQueries.GetUserImages, new { userId });
+            return Slapper.AutoMapper.MapDynamic<Image>(result);
         }
     }
 }
