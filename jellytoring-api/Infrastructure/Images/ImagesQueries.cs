@@ -11,8 +11,9 @@
                                         values (@userId, @Location, @Date, @Filename, @StatusId);
                                         select Last_Insert_Id();";
 
-        public const string Get = GetAll + " where images.id = @imageId;";
+        public const string GetByImageId = "images.id = @imageId;";
 
-        public const string GetUserImages = GetAll + " where user_id = @userId";
+        public const string GetByUserId = "user_id = @userId";
+        public const string UpdateStatus = "update images set status_id = @statusId where id = @imageId";
     }
 }

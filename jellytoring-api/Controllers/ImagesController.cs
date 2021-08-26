@@ -50,5 +50,19 @@ namespace jellytoring_api.Controllers
 
             return createImage is not null ? CreatedAtAction(nameof(Post), createImage) : StatusCode(500);
         }
+
+        // TODO: check permissions. Only admins may update the status
+        [HttpPut("resolution/{imageId}")]
+        public async Task<ActionResult<Image>> Approve(uint imageId, [FromBody] ImageResolution imageToUpdate)
+        {
+            if(imageId != imageToUpdate.Id)
+            {
+                return BadRequest();
+            }
+
+            var updatedImage = await _imagesService.ResolveAsync(imageToUpdate);
+
+            return updatedImage == null ? StatusCode(500) : Ok(updatedImage);
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace jellytoring_api.Infrastructure.Statuses
         public Task<Status> GetApprovedAsync() => GetAsync(ApprovedStatusCode);
         public Task<Status> GetDiscardedAsync() => GetAsync(DiscardedStatusCode);
 
-        private async Task<Status> GetAsync(string statusCode)
+        public async Task<Status> GetAsync(string statusCode)
         {
             using var connection = _connectionFactory.CreateConnection();
             await connection.OpenAsync();

@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using jellytoring_api.Models;
 using jellytoring_api.Models.Images;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,7 +21,11 @@ namespace jellytoring_api.Infrastructure.Images
             using var connection = _connectionFactory.CreateConnection();
             await connection.OpenAsync();
 
-            var result = await connection.QueryFirstOrDefaultAsync(ImagesQueries.Get, new { imageId });
+            var builderTemplate = _sqlBuilder.AddTemplate(ImagesQueries.GetAll);
+
+            _sqlBuilder.Where(ImagesQueries.GetByImageId, new { imageId });
+
+            var result = await connection.QueryFirstOrDefaultAsync(builderTemplate.RawSql, builderTemplate.Parameters);
             return Slapper.AutoMapper.MapDynamic<Image>(result);
         }
 
@@ -38,7 +43,11 @@ namespace jellytoring_api.Infrastructure.Images
             using var connection = _connectionFactory.CreateConnection();
             await connection.OpenAsync();
 
-            var result = await connection.QueryAsync(ImagesQueries.GetUserImages, new { userId });
+            var builderTemplate = _sqlBuilder.AddTemplate(ImagesQueries.GetAll);
+
+            _sqlBuilder.Where(ImagesQueries.GetByUserId, new { userId });
+
+            var result = await connection.QueryAsync(builderTemplate.RawSql, builderTemplate.Parameters);
             return Slapper.AutoMapper.MapDynamic<Image>(result);
         }
 
@@ -56,6 +65,28 @@ namespace jellytoring_api.Infrastructure.Images
 
             var result = await connection.QueryAsync(builderTemplate.RawSql, builderTemplate.Parameters);
             return Slapper.AutoMapper.MapDynamic<Image>(result);
+        }
+
+        public async Task<bool> UpdateStatusAsync(uint imageId, Status status)
+        {
+            using var connection = _connectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
+            var statusId = status.Id;
+
+            var command = connection.CreateCommand();
+            var statusIdParam = command.CreateParameter();
+            statusIdParam.ParameterName = "@statusId";
+            statusIdParam.Value = statusId;
+            var imageIdParam = command.CreateParameter();
+            imageIdParam.ParameterName = "@imageId";
+            imageIdParam.Value = imageId;
+            command.CommandText = ImagesQueries.UpdateStatus;
+            command.Parameters.Add(statusIdParam);
+            command.Parameters.Add(imageIdParam);
+            var rows = await command.ExecuteNonQueryAsync();
+
+            return rows == 1;
         }
     }
 }
