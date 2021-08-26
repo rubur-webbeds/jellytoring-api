@@ -3,7 +3,7 @@
     public class ImageResolution
     {
         public uint Id { get; set; }
-        public string Status { get; set; }
+        public Status Status { get; set; }
         public string Reason { get; set; }
         public uint UserId { get; set; }
     }

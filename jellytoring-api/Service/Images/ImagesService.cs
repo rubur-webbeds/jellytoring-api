@@ -99,7 +99,7 @@ namespace jellytoring_api.Service.Images
 
         public async Task<Image> ResolveAsync(ImageResolution imageToUpdate)
         {
-            var status = await _statusesRepository.GetAsync(imageToUpdate.Status);
+            var status = await _statusesRepository.GetAsync(imageToUpdate.Status.Code);
 
             // Update status
             var resultOk = await _imagesDbRepository.UpdateStatusAsync(imageToUpdate.Id, status);
