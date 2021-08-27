@@ -8,6 +8,8 @@ namespace jellytoring_api.Service.Images
     {
         Task<Image> CreateAsync(string userEmail, Image image);
         Task<Image> GetAsync(uint imageId);
+        Task<IEnumerable<Image>> GetAllAsync(ImagesFilter filter);
         Task<IEnumerable<Image>> GetUserImagesAsync(string userEmail);
+        Task<Image> ResolveAsync(ImageResolution image);
     }
 }

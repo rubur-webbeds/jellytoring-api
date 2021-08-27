@@ -5,7 +5,6 @@ using jellytoring_api.Models.Email;
 using jellytoring_api.Models.Email.Template;
 using jellytoring_api.Models.Images;
 using jellytoring_api.Service.Email;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -94,6 +93,44 @@ namespace jellytoring_api.Service.Images
             var user = await _usersRepository.GetAsync(userEmail);
 
             return await _imagesDbRepository.GetUserImagesAsync(user.Id);
+        }
+
+        public Task<IEnumerable<Image>> GetAllAsync(ImagesFilter filter) => _imagesDbRepository.GetAllAsync(filter);
+
+        public async Task<Image> ResolveAsync(ImageResolution imageToUpdate)
+        {
+            var status = await _statusesRepository.GetAsync(imageToUpdate.Status.Code);
+
+            // Update status
+            var resultOk = await _imagesDbRepository.UpdateStatusAsync(imageToUpdate.Id, status);
+
+            if (!resultOk)
+            {
+                return null;
+            }
+
+            // send resolution email
+            var image = await GetAsync(imageToUpdate.Id);
+            var user = await _usersRepository.GetAsync(imageToUpdate.UserId);
+
+            // TODO: move to ImageResolutionService
+            var imageApprovalTemplate =
+                new TemplateBuilder()
+                .SetName("ImageResolutionTemplate.html")
+                .AddOption("imageStatus").WithValue(image.Status.Name)
+                .AddOption("imageDate").WithValue(image.Date.ToString("d"))
+                .AddOption("imageReason").WithValue(imageToUpdate.Reason)
+                .Build();
+
+            var templateReq = new EmailTemplateRequest
+            {
+                EmailRequest = new EmailRequest { To = user.Email, Subject = $"Image upload resolution from {image.Date:d}" },
+                Template = imageApprovalTemplate
+            };
+
+            await _emailService.SendEmailTemplateAsync(templateReq);
+
+            return image;
         }
 
         private string ContentTypeToExtension(string contentType)

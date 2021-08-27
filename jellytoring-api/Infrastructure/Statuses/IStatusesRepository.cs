@@ -10,5 +10,6 @@ namespace jellytoring_api.Infrastructure.Statuses
         Task<Status> GetApprovedAsync();
         Task<Status> GetDiscardedAsync();
         Task<Status> GetPendingAsync();
+        Task<Status> GetAsync(string statusCode);
     }
 }
