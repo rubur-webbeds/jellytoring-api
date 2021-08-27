@@ -332,14 +332,24 @@ CREATE TABLE IF NOT EXISTS `email_confirmations`(
     FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
 );
 
+CREATE TABLE IF NOT EXISTS `statuses`(
+	`id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `name` varchar(30) NOT NULL,
+    `code` varchar(4) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+INSERT INTO `statuses`(`name`, `code`) VALUES ('Pending', 'PEND'), ('Approved', 'APPR'), ('Discarded', 'DISC');
+
 CREATE TABLE IF NOT EXISTS `images`(
 	`id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `user_id` int(10) UNSIGNED NOT NULL,
     `location` varchar(255) NOT NULL,
     `date` datetime NOT NULL,
     `filename` varchar(41) NOT NULL,
-    `confirmed` boolean NOT NULL DEFAULT 0,
+    `status_id` int(10) unsigned NOT NULL,
     PRIMARY KEY (`id`),
-    FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
+    FOREIGN KEY(`user_id`) REFERENCES `users`(`id`),
+    FOREIGN KEY(`status_id`) REFERENCES `statuses`(`id`)
 );
 

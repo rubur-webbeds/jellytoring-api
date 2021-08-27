@@ -22,8 +22,15 @@ namespace jellytoring_api.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        // TODO: just admins can call this endpoint
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Image>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Image>>> GetAll([FromQuery] ImagesFilter filter)
+        {
+            return Ok(await _imagesService.GetAllAsync(filter));
+        }
+
+        [HttpGet("user")]
+        public async Task<ActionResult<IEnumerable<Image>>> GetUserImages()
         {
             var userEmail = _httpContextAccessor.HttpContext.Items["UserEmail"].ToString();
             var images = await _imagesService.GetUserImagesAsync(userEmail);
@@ -42,6 +49,20 @@ namespace jellytoring_api.Controllers
             var createImage = await _imagesService.CreateAsync(userEmail, image);
 
             return createImage is not null ? CreatedAtAction(nameof(Post), createImage) : StatusCode(500);
+        }
+
+        // TODO: check permissions. Only admins may update the status
+        [HttpPut("resolution/{imageId}")]
+        public async Task<ActionResult<Image>> Approve(uint imageId, [FromBody] ImageResolution imageToUpdate)
+        {
+            if(imageId != imageToUpdate.Id)
+            {
+                return BadRequest();
+            }
+
+            var updatedImage = await _imagesService.ResolveAsync(imageToUpdate);
+
+            return updatedImage == null ? StatusCode(500) : Ok(updatedImage);
         }
     }
 }

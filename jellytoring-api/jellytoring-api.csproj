@@ -8,6 +8,7 @@
 	<ItemGroup>
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
 		<PackageReference Include="Dapper" Version="2.0.90" />
+		<PackageReference Include="Dapper.SqlBuilder" Version="2.0.78" />
 		<PackageReference Include="MailKit" Version="2.14.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0" NoWarn="NU1605" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.0" NoWarn="NU1605" />
@@ -27,7 +28,8 @@
 		<Folder Include="Service\Sessions\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <None Include="wwwroot\Templates\ImageApprovalTemplate.html" />
-	  <None Include="wwwroot\Templates\EmailConfirmationTemplate.html" />
+		<None Include="wwwroot\Templates\ImageApprovalTemplate.html" />
+		<None Include="wwwroot\Templates\EmailConfirmationTemplate.html" />
+		<None Include="wwwroot\Templates\ImageApprovalTemplate.html" />
 	</ItemGroup>
 </Project>
