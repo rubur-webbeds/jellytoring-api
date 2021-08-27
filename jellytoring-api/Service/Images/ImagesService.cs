@@ -124,8 +124,7 @@ namespace jellytoring_api.Service.Images
 
             var templateReq = new EmailTemplateRequest
             {
-                // TODO: set user email
-                EmailRequest = new EmailRequest { To = "rubur100@gmail.com", Subject = $"Image upload resolution from {image.Date:d}" },
+                EmailRequest = new EmailRequest { To = user.Email, Subject = $"Image upload resolution from {image.Date:d}" },
                 Template = imageApprovalTemplate
             };
 
