@@ -353,3 +353,12 @@ CREATE TABLE IF NOT EXISTS `images`(
     FOREIGN KEY(`status_id`) REFERENCES `statuses`(`id`)
 );
 
+CREATE TABLE IF NOT EXISTS `password_recoveries`(
+    `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `user_id` int(10) UNSIGNED NOT NULL,
+    `confirmation_code` varchar(36) NOT NULL,
+    `issued_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
+);
+

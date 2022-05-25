@@ -21,6 +21,7 @@ namespace jellytoring_api.Service.Users
         public Task<IEnumerable<User>> GetAllAsync() => _usersRepository.GetAllAsync();
 
         public Task<User> GetAsync(uint id) => _usersRepository.GetAsync(id);
+        public Task<CreateSessionUser> GetAsync(string email) => _usersRepository.GetAsync(email);
 
         public async Task<User> CreateAsync(CreateUser user)
         {

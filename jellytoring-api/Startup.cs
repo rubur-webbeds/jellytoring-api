@@ -21,6 +21,8 @@ using jellytoring_api.Service.Images;
 using jellytoring_api.Infrastructure.Images;
 using jellytoring_api.Middleware.Jwt;
 using jellytoring_api.Infrastructure.Statuses;
+using jellytoring_api.Service.PasswordRecoveries;
+using jellytoring_api.Infrastructure.PasswordRecoveries;
 
 namespace jellytoring_api
 {
@@ -81,6 +83,9 @@ namespace jellytoring_api
             services.AddScoped<IImagesDiskRepository, ImagesDiskRepository>();
 
             services.AddScoped<IStatusesRepository, StatusesRepository>();
+
+            services.AddScoped<PasswordRecoveryService>();
+            services.AddScoped<PasswordRecoveryRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
