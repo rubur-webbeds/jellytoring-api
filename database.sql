@@ -362,3 +362,14 @@ CREATE TABLE IF NOT EXISTS `password_recoveries`(
     FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
 );
 
+CREATE TABLE IF NOT EXISTS `running_inferences`(
+    `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `user_id` int(10) UNSIGNED NOT NULL,
+    `image_name` varchar(255) NOT NULL,
+    `started_at` datetime NOT NULL,
+    `output_path` varchar(255),
+    `status` varchar(10) NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY(`user_id`) REFERENCES `users`(`id`)
+);
+

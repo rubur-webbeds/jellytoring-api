@@ -5,6 +5,6 @@ namespace jellytoring_api.Infrastructure.Images
 {
     public interface IImagesDiskRepository
     {
-        Task SaveAsync(Image image);
+        Task SaveAsync(Image image, string path);
     }
 }

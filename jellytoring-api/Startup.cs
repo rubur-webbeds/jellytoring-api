@@ -23,6 +23,8 @@ using jellytoring_api.Middleware.Jwt;
 using jellytoring_api.Infrastructure.Statuses;
 using jellytoring_api.Service.PasswordRecoveries;
 using jellytoring_api.Infrastructure.PasswordRecoveries;
+using jellytoring_api.Service.Inference;
+using jellytoring_api.Infrastructure.Inference;
 
 namespace jellytoring_api
 {
@@ -86,6 +88,10 @@ namespace jellytoring_api
 
             services.AddScoped<PasswordRecoveryService>();
             services.AddScoped<PasswordRecoveryRepository>();
+
+            services.AddScoped<InferenceService>();
+            services.AddScoped<InferenceEngine>();
+            services.AddScoped<InferenceRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

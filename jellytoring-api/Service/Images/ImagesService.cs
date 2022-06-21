@@ -5,6 +5,7 @@ using jellytoring_api.Models.Email;
 using jellytoring_api.Models.Email.Template;
 using jellytoring_api.Models.Images;
 using jellytoring_api.Service.Email;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,19 +21,22 @@ namespace jellytoring_api.Service.Images
         private readonly IUsersRepository _usersRepository;
         private readonly IEmailService _emailService;
         private readonly IStatusesRepository _statusesRepository;
+        private readonly IConfiguration _configuration;
 
         public ImagesService(
             IImagesDbRepository imagesDbRepository,
             IImagesDiskRepository imagesDiskRepository,
             IUsersRepository usersRepository,
             IEmailService emailService,
-            IStatusesRepository statusesRepository)
+            IStatusesRepository statusesRepository,
+            IConfiguration configuration)
         {
             _imagesDbRepository = imagesDbRepository;
             _imagesDiskRepository = imagesDiskRepository;
             _usersRepository = usersRepository;
             _emailService = emailService;
             _statusesRepository = statusesRepository;
+            _configuration = configuration;
         }
 
         public async Task<Image> GetAsync(uint imageId)
@@ -66,7 +70,8 @@ namespace jellytoring_api.Service.Images
 
             if (imageId != 0)
             {
-                await _imagesDiskRepository.SaveAsync(image);
+                var filePath = _configuration.GetValue<string>("ImagesFilePath");
+                await _imagesDiskRepository.SaveAsync(image, filePath);
             }
 
             // TODO: probably move to ImageApprovalService.
@@ -133,20 +138,17 @@ namespace jellytoring_api.Service.Images
             return image;
         }
 
-        private string ContentTypeToExtension(string contentType)
+        public static string ContentTypeToExtension(string contentType)
         {
-            switch (contentType)
+            return contentType switch
             {
-                case "image/jpeg":
-                    return "jpeg";
-                case "image/png":
-                    return "png";
-                default:
-                    return "error";
-            }
+                "image/jpeg" => "jpeg",
+                "image/png" => "png",
+                _ => "error",
+            };
         }
 
-        private bool Validate(Image image)
+        public static bool Validate(Image image)
         {
             // file extension validation
             string[] permittedExtensions = { ".jpeg", ".jpg", ".png" };

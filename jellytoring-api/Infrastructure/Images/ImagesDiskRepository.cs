@@ -7,23 +7,16 @@ namespace jellytoring_api.Infrastructure.Images
 {
     public class ImagesDiskRepository : IImagesDiskRepository
     {
-        private readonly IConfiguration _configuration;
-        public ImagesDiskRepository(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-        public async Task SaveAsync(Image image)
+        public async Task SaveAsync(Image image, string path)
         {
             if (image.File.Length > 0)
             {
-                var filePath = _configuration.GetValue<string>("ImagesFilePath");
+                var fullPath = Path.Combine(path, image.Filename);
 
-                using (var stream = File.Create(Path.Combine(filePath, image.Filename)))
-                {
-                    await image.File.CopyToAsync(stream);
-                    stream.Close();
-                }
+                Directory.CreateDirectory(path);
+
+                using var stream = File.Create(fullPath);
+                await image.File.CopyToAsync(stream);
             }
         }
     }
