@@ -8,10 +8,15 @@
                                                 @GrantContactInfoPermission, @GrantUibPermission);
                                         select Last_Insert_Id();";
 
-        public const string GetAll = @"select id Id, full_name FullName, email Email, interest_id InterestId, institution Institution,
-                                              country_code CountryCode, grant_contact_info_permission GrantContactInfoPermission,
-                                              grant_uib_permission GrantUibPermission, email_confirmed EmailConfirmed, active Active
-                                       from users;";
+        public const string GetAll = @"select u.id Id, full_name FullName, email Email, institution Institution, email_confirmed EmailConfirmed,
+                                        active Active, i.name InterestName, c.country_name CountryName, r.code RoleCode, count(ri.user_id) InferencesCount
+                                        from users u
+                                        join interests i on u.interest_id = i.id
+                                        join countries c on u.country_code = c.country_code
+                                        join user_roles ur on u.id = ur.user_id
+                                        join roles r on r.id = ur.role_id
+                                        join running_inferences ri on u.id = ri.user_id
+                                        group by (ri.user_id);";
 
         public const string Get = @"select id Id, full_name FullName, email Email, interest_id InterestId,
                                            institution Institution, country_code CountryCode, grant_contact_info_permission GrantContactInfoPermission,
@@ -32,6 +37,7 @@
         public const string GetUserRoleId = "select id from roles where code = 'USR';";
         public const string GetAdminRoleId = "select id from roles where code = 'ADM';";
         public const string AddRoleToUser = "insert into user_roles(user_id, role_id) values (@userId, @userRoleId);";
+        public const string SetRoleToUser = "update user_roles set role_id = @RoleId where user_id = @UserId";
 
     }
 }

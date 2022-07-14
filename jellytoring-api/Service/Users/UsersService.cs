@@ -18,7 +18,7 @@ namespace jellytoring_api.Service.Users
             _emailConfirmationService = emailConfirmationService;
         }
 
-        public Task<IEnumerable<User>> GetAllAsync() => _usersRepository.GetAllAsync();
+        public Task<IEnumerable<UserDetails>> GetAllAsync() => _usersRepository.GetAllAsync();
 
         public Task<User> GetAsync(uint id) => _usersRepository.GetAsync(id);
         public Task<CreateSessionUser> GetAsync(string email) => _usersRepository.GetAsync(email);
@@ -44,5 +44,7 @@ namespace jellytoring_api.Service.Users
 
             return null;
         }
+
+        public Task<bool> UpdateRoleAsync(int userId, Role role) => _usersRepository.UpdateRoleAsync(userId, role);
     }
 }

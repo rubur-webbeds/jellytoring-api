@@ -7,9 +7,10 @@ namespace jellytoring_api.Infrastructure.Users
     public interface IUsersRepository
     {
         Task<uint> CreateAsync(CreateUser user);
-        Task<IEnumerable<User>> GetAllAsync();
+        Task<IEnumerable<UserDetails>> GetAllAsync();
         Task<User> GetAsync(uint id);
         Task<CreateSessionUser> GetAsync(string email);
         Task<SessionUser> GetUserRolesAsync(string email);
+        Task<bool> UpdateRoleAsync(int userId, Role role);
     }
 }

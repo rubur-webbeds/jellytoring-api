@@ -2,8 +2,8 @@
 {
     public class Role
     {
-        public uint Id;
-        public string Name;
-        public string Code;
+        public uint Id { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace jellytoring_api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDetails>>> GetUsers()
         {
             return Ok(await _usersService.GetAllAsync());
         }
@@ -41,6 +41,12 @@ namespace jellytoring_api.Controllers
             var newUser = await _usersService.CreateAsync(user);
 
             return newUser is not null ? CreatedAtAction(nameof(PostUser), newUser) :  StatusCode(500, "Oops! Something went wrong");
+        }
+
+        [HttpPost("{userId}/role")]
+        public async Task<IActionResult> PostUserRole(int userId, [FromBody] Role role)
+        {
+            return await _usersService.UpdateRoleAsync(userId, role) ? Ok(role) : StatusCode(500, "Oops! Something went wrong");
         }
     }
 }

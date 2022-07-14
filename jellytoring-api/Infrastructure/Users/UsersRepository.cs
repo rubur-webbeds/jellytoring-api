@@ -16,12 +16,12 @@ namespace jellytoring_api.Infrastructure.Users
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<UserDetails>> GetAllAsync()
         {
             using var connection = _connectionFactory.CreateConnection();
             await connection.OpenAsync();
 
-            return await connection.QueryAsync<User>(UsersQueries.GetAll);
+            return await connection.QueryAsync<UserDetails>(UsersQueries.GetAll);
         }
 
         public async Task<User> GetAsync(uint id)
@@ -64,6 +64,26 @@ namespace jellytoring_api.Infrastructure.Users
             }
 
             return userId;
+        }
+
+        public async Task<bool> UpdateRoleAsync(int userId, Role role)
+        {
+            using var connection = _connectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
+            var command = connection.CreateCommand();
+            var userIdParam = command.CreateParameter();
+            userIdParam.ParameterName = "@UserId";
+            userIdParam.Value = userId;
+            var roleIdParam = command.CreateParameter();
+            roleIdParam.ParameterName = "@RoleId";
+            roleIdParam.Value = role.Id;
+            command.CommandText = UsersQueries.SetRoleToUser;
+            command.Parameters.Add(userIdParam);
+            command.Parameters.Add(roleIdParam);
+            var rows = await command.ExecuteNonQueryAsync();
+
+            return rows == 1;
         }
     }
 }
